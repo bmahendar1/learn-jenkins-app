@@ -6,6 +6,7 @@ pipeline {
     }
     
     stages {
+        // This is single line comment
         stage('Build') {
             agent {
                 docker {
@@ -15,6 +16,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    # This is to comment a line in this kind of block
                     ls -la
                     node --version
                     npm --version
@@ -24,6 +26,10 @@ pipeline {
                 '''
             }
         }
+
+        /*
+        * This is multiline comment
+        */
 
         stage('Test') {
             agent {
