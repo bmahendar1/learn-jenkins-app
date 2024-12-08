@@ -30,7 +30,7 @@ pipeline {
                 echo 'Test stage started...'
                 sh '''
                     test -f build/$INDEX_FILE_NAME
-                    npm text
+                    npm test
                 '''
             }
         }
