@@ -26,11 +26,13 @@ pipeline {
         }
 
         stage('Test') {
-            echo 'Test stage started...'
-            sh '''
-                test -f build/$INDEX_FILE_NAME
-                npm run text
-            '''
+            steps {
+                echo 'Test stage started...'
+                sh '''
+                    test -f build/$INDEX_FILE_NAME
+                    npm run text
+                '''
+            }
         }
     }
 }
