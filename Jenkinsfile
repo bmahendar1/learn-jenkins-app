@@ -57,7 +57,7 @@ pipeline {
                     }
                 }
 
-                stage('E2e Tests') {
+                stage('Local E2e Tests') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.49.1-noble'
@@ -66,7 +66,7 @@ pipeline {
                     }
 
                     steps {
-                        echo 'E2E stage started...'
+                        echo 'Local E2E stage started...'
                         sh '''
                             npm install serve
                             node_modules/.bin/serve -s build &
@@ -84,7 +84,7 @@ pipeline {
                                     keepAll: false, 
                                     reportDir: 'playwright-report', 
                                     reportFiles: 'index.html', 
-                                    reportName: 'Playwright HTML Report', 
+                                    reportName: 'Playwright Local HTML Report', 
                                     reportTitles: 'Report', 
                                     useWrapperFileDirectly: true
                                 ]
@@ -115,6 +115,44 @@ pipeline {
             }
         }
 
+
+        stage('Prod E2e Tests') {
+
+            environment {
+               CI_ENVIRONMENT_URL = 'https://melodic-kataifi-6876dd.netlify.app'
+            }
+
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    reuseNode true
+                }
+            }
+
+            steps {
+                echo 'Prod E2E stage started...'
+                sh '''
+                    npx playwright test --reporter=html
+                '''
+            }
+
+            post {
+                always {
+                    publishHTML(
+                        [
+                            allowMissing: false, 
+                            alwaysLinkToLastBuild: false, 
+                            keepAll: false, 
+                            reportDir: 'playwright-report', 
+                            reportFiles: 'index.html', 
+                            reportName: 'Playwright Prod HTML Report', 
+                            reportTitles: 'Report', 
+                            useWrapperFileDirectly: true
+                        ]
+                    )
+                }
+            }
+        }
 
         // stage('Test') {
         //     agent {
