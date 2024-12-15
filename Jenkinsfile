@@ -95,12 +95,18 @@ pipeline {
         }
 
         stage("Deploy") {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    reuseNode true
+                }
+            }
 
             steps {
                 sh '''
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
-                    echo $NETLIFY_SITE_ID
+                    echo Deploying app to Netlify Site Id: $NETLIFY_SITE_ID
                 '''
             }
         }
