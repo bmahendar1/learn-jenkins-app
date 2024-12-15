@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         INDEX_FILE_NAME = 'index.html'
+        NETLIFY_SITE_ID = '27a5dac5-7760-4ba0-8f87-ccc37def6db9'
     }
     
     stages {
@@ -92,6 +93,18 @@ pipeline {
                 }
             }
         }
+
+        stage("Deploy") {
+
+            steps {
+                sh '''
+                    npm install netlify
+                    node_modules/.bin/netlify --version
+                    echo $NETLIFY_SITE_ID
+                '''
+            }
+        }
+
 
         // stage('Test') {
         //     agent {
