@@ -105,6 +105,7 @@ pipeline {
 
             steps {
                 sh '''
+                    echo deployment has begun...
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
                     echo Deploying app to netlify site Id: $NETLIFY_SITE_ID
