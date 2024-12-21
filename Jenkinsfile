@@ -107,11 +107,12 @@ pipeline {
             steps {
                 sh '''
                     echo deployment has begun...
-                    npm install netlify-cli
+                    npm install netlify-cli node-jq
                     node_modules/.bin/netlify --version
                     echo Deploying app to netlify site Id: $NETLIFY_SITE_ID
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --json > deploy-logs.json
+                    node_modules/.bin/node-jq -r '.deploy_url' deploy-logs.json
                 '''
             }
         }
