@@ -57,7 +57,7 @@ pipeline {
                     }
                 }
 
-                stage('Local E2e Tests') {
+                stage('Local E2E Tests') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.49.1-noble'
@@ -114,6 +114,20 @@ pipeline {
                     node_modules/.bin/netlify deploy --dir=build --json > deploy-logs.json
                     node_modules/.bin/node-jq -r '.deploy_url' deploy-logs.json
                 '''
+
+                script {
+                    env.STAGING_URL = sh(script: "node_modules/.bin/node-jq -r '.deploy_url' deploy-logs.json", returnStdout: true)
+                }
+            }
+        }
+
+        stage('Staging E2E') {
+            environment {
+                CI_ENVIRONMENT_URL = "${env.STAGING_URL}"
+            }
+
+            steps {
+                echo "$CI_ENVIRONMENT_URL"
             }
         }
 
