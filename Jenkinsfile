@@ -10,6 +10,13 @@ pipeline {
     
     stages {
         
+        stage('Docker') {
+            steps {
+                sh 'docker build -t custom-playwright-image .'
+            }
+        }
+
+
         stage('Build') {
             agent {
                 docker {
@@ -96,7 +103,8 @@ pipeline {
 
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    // image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    image 'custom-playwright-image'
                     reuseNode true
                 }
             }
@@ -104,13 +112,13 @@ pipeline {
             steps {
                 sh '''
                     echo deployment has begun...
-                    npm install netlify-cli node-jq
-                    node_modules/.bin/netlify --version
+                    #npm install netlify-cli node-jq
+                    netlify --version
                     echo Deploying app to netlify site Id: $NETLIFY_SITE_ID
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --json > deploy-logs.json
-                    node_modules/.bin/node-jq -r '.deploy_url' deploy-logs.json
-                    CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-logs.json)
+                    netlify status
+                    netlify deploy --dir=build --json > deploy-logs.json
+                    node-jq -r '.deploy_url' deploy-logs.json
+                    CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-logs.json)
                     npx playwright test --reporter=html
                 '''
             }
@@ -141,7 +149,8 @@ pipeline {
 
             agent {
                 docker {
-                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    // image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                    image 'custom-playwright-image'
                     reuseNode true
                 }
             }
@@ -149,11 +158,11 @@ pipeline {
             steps {
                 sh '''
                     echo deployment has begun...
-                    npm install netlify-cli
-                    node_modules/.bin/netlify --version
+                    #npm install netlify-cli
+                    netlify --version
                     echo Deploying app to netlify site Id: $NETLIFY_SITE_ID
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
+                    netlify status
+                    netlify deploy --dir=build --prod
                     sleep 10
                     npx playwright test --reporter=html
                     test -f playwright-report/index.html
