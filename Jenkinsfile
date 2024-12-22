@@ -143,6 +143,7 @@ pipeline {
                     node_modules/.bin/netlify deploy --dir=build --prod
                     sleep 10
                     npx playwright test --reporter=html
+                    test -f playwright-report/index.html
                 '''
             }
 
