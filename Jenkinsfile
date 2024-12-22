@@ -95,7 +95,7 @@ pipeline {
         stage("Staging") {
 
             environment {
-                CI_ENVIRONMENT_URL = ""
+                CI_ENVIRONMENT_URL = "STAGING_URL"
             }
 
             agent {
